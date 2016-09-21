@@ -11,6 +11,6 @@
       android:layout_height="match_parent"
       android:layout_gravity="start"
       android:background="#ff00"
-      app:layout_behavior="com.jakewharton.behavior.drawer.DrawerBehavior"
+      app:layout_behavior="@string/jakewharton_drawer_behavior"
       />
 </android.support.design.widget.CoordinatorLayout>
