@@ -3,6 +3,13 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath 'com.android.tools.build:gradle:2.2.0'
+    classpath 'com.android.tools.build:gradle:2.2.2'
   }
+}
+
+ext {
+  androidBuildTool = '25.0.0'
+  androidTargetSdk = 25
+  androidSupportLib = '25.0.1'
+  androidMinSdk = 9
 }

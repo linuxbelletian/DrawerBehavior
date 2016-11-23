@@ -30,13 +30,18 @@ import android.view.accessibility.AccessibilityEvent;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static com.jakewharton.behavior.drawer.DrawerBehavior.DrawerListener;
+import static com.jakewharton.behavior.drawer.DrawerBehavior.State;
 
 final class BehaviorDelegate extends ViewDragHelper.Callback {
   private static final int PEEK_DELAY = 160; // ms
   private static final int MIN_FLING_VELOCITY = 400; // dips per second
-  private static final int FLAG_IS_OPENED = 0x1;
-  private static final int FLAG_IS_OPENING = 0x2;
-  private static final int FLAG_IS_CLOSING = 0x4;
+   static final int FLAG_IS_OPENED = 0x1;
+   @SuppressWarnings("WeakerAccess")
+   static final int FLAG_IS_OPENING = 0x2;
+   @SuppressWarnings("unused")
+   static final int FLAG_IS_CLOSING = 0x4;
+    static final int FLAG_IS_CLOSED = 0x0;
   private static final int DEFAULT_SCRIM_COLOR = 0x99000000;
 
   private final CoordinatorLayout parent;
@@ -45,12 +50,16 @@ final class BehaviorDelegate extends ViewDragHelper.Callback {
   private final ContentScrimDrawer scrimDrawer;
   private final ViewDragHelper dragger;
 
+    private DrawerListener listener;
+
   private float initialMotionX;
   private float initialMotionY;
   private boolean childrenCanceledTouch;
   private int openState;
   private boolean isPeeking;
   private float onScreen;
+
+    @State
   private int drawerState;
 
   private int scrimColor = DEFAULT_SCRIM_COLOR;
@@ -133,6 +142,18 @@ final class BehaviorDelegate extends ViewDragHelper.Callback {
       childrenCanceledTouch = true;
     }
   }
+
+    boolean isDrawerOpen() {
+        return openState == FLAG_IS_OPENED || openState == FLAG_IS_OPENING;
+    }
+
+    void setDrawerState(int openState) {
+        this.openState = openState;
+    }
+
+    void setDrawListener(DrawerListener listener) {
+        this.listener = listener;
+    }
 
   boolean onInterceptTouchEvent(MotionEvent ev) {
     boolean interceptForDrag = dragger.shouldInterceptTouchEvent(ev);
@@ -260,7 +281,7 @@ final class BehaviorDelegate extends ViewDragHelper.Callback {
   }
 
   private void updateDrawerState(int activeState, View activeDrawer) {
-    final int state = dragger.getViewDragState();
+      @State final int state = dragger.getViewDragState();
 
     if (activeDrawer != null && activeState == ViewDragHelper.STATE_IDLE) {
       if (onScreen == 0) {
@@ -273,6 +294,8 @@ final class BehaviorDelegate extends ViewDragHelper.Callback {
     if (state != drawerState) {
       drawerState = state;
     }
+      if (listener != null)
+          listener.onDrawerStateChanged(drawerState);
   }
 
   private void dispatchOnDrawerClosed(View drawerView) {
@@ -290,6 +313,8 @@ final class BehaviorDelegate extends ViewDragHelper.Callback {
           rootView.sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
         }
       }
+        if (listener != null)
+            listener.onDrawerClosed(drawerView);
     }
   }
 
@@ -305,6 +330,8 @@ final class BehaviorDelegate extends ViewDragHelper.Callback {
       }
 
       drawerView.requestFocus();
+        if (listener != null)
+            listener.onDrawerOpened(drawerView);
     }
   }
 
@@ -346,19 +373,21 @@ final class BehaviorDelegate extends ViewDragHelper.Callback {
     int color = imag << 24 | (scrimColor & 0xffffff);
     scrimDrawer.setColor(color);
 
-    setDrawerViewOffset(offset);
+    setDrawerViewOffset(changedView,offset);
     boolean gone = offset == 0;
     changedView.setVisibility(gone ? INVISIBLE : VISIBLE);
     scrimDrawer.setVisible(!gone);
     parent.invalidate();
   }
 
-  private void setDrawerViewOffset(float slideOffset) {
+  private void setDrawerViewOffset(View drawerView,float slideOffset) {
     if (slideOffset == onScreen) {
       return;
     }
 
     onScreen = slideOffset;
+      if (listener != null)
+      listener.onDrawerSlide(drawerView,slideOffset);
   }
 
   @Override public void onEdgeTouched(int edgeFlags, int pointerId) {
@@ -447,7 +476,7 @@ final class BehaviorDelegate extends ViewDragHelper.Callback {
     }
 
     if (changeOffset) {
-      setDrawerViewOffset(newOffset);
+      setDrawerViewOffset(child,newOffset);
     }
 
     int newVisibility = onScreen > 0 ? VISIBLE : INVISIBLE;

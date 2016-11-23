@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-  compileSdkVersion 24
-  buildToolsVersion '24.0.2'
+  compileSdkVersion androidTargetSdk
+  buildToolsVersion androidBuildTool
 
   defaultConfig {
     applicationId 'com.example.behavior.drawer'
-    minSdkVersion 9
-    targetSdkVersion 24
+    minSdkVersion androidMinSdk
+    targetSdkVersion androidTargetSdk
     versionCode 1
     versionName '1.0'
   }
