@@ -79,10 +79,10 @@ public final class DrawerBehavior extends CoordinatorLayout.Behavior<View> {
      * Called when the drawer motion state changes. The new state will
      *
      * be one of {@link ViewDragHelper#STATE_IDLE}, {@link ViewDragHelper#STATE_DRAGGING} or {@link ViewDragHelper#STATE_SETTLING}.
-     *
+     * @param drawerView Drawer view which motion state is changed
      * @param newState The new drawer motion state
      */
-    void onDrawerStateChanged(@State int newState);
+    void onDrawerStateChanged(View drawerView,@State int newState);
   }
 
   private static void validateGravity(int gravity) {

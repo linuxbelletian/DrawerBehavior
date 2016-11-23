@@ -62,6 +62,7 @@ final class BehaviorDelegate extends ViewDragHelper.Callback {
     @State
   private int drawerState;
 
+  @SuppressWarnings("FieldCanBeLocal")
   private int scrimColor = DEFAULT_SCRIM_COLOR;
 
   private final Runnable peekRunnable = new Runnable() {
@@ -215,7 +216,7 @@ final class BehaviorDelegate extends ViewDragHelper.Callback {
           final int slop = dragger.getTouchSlop();
           if (dx * dx + dy * dy < slop * slop) {
             // Taps close a dimmed open drawer but only if it isn't locked open.
-            if ((openState & FLAG_IS_OPENED) == FLAG_IS_OPENED) { // TODO isDrawerOpen method?
+            if ((openState & FLAG_IS_OPENED) == FLAG_IS_OPENED) {
               peekingOnly = false;
             }
           }
@@ -295,7 +296,7 @@ final class BehaviorDelegate extends ViewDragHelper.Callback {
       drawerState = state;
     }
       if (listener != null)
-          listener.onDrawerStateChanged(drawerState);
+          listener.onDrawerStateChanged(activeDrawer,drawerState);
   }
 
   private void dispatchOnDrawerClosed(View drawerView) {
