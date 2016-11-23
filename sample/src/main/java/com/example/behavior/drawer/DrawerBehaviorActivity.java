@@ -1,6 +1,5 @@
 package com.example.behavior.drawer;
 
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,7 +32,7 @@ public final class DrawerBehaviorActivity extends AppCompatActivity {
       }
 
       @Override
-      public void onDrawerStateChanged(int newState) {
+      public void onDrawerStateChanged(View drawerView, int newState) {
           Log.d(TAG,"onDrawerStateChanged:"+ newState);
       }
     });
