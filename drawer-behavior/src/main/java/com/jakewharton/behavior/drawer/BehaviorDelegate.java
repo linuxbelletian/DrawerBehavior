@@ -240,6 +240,8 @@ final class BehaviorDelegate extends ViewDragHelper.Callback {
       return;
     }
 
+      removeCallbacks();
+
     boolean needsSettle;
     if (isLeft) {
       needsSettle = dragger.smoothSlideViewTo(child, -child.getWidth(), child.getTop());
@@ -247,8 +249,6 @@ final class BehaviorDelegate extends ViewDragHelper.Callback {
       needsSettle = dragger.smoothSlideViewTo(child, parent.getWidth(), child.getTop());
     }
     isPeeking = false;
-
-    removeCallbacks();
 
     if (needsSettle) {
       ViewCompat.postOnAnimation(parent, draggerSettle);
