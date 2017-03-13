@@ -59,7 +59,7 @@ final class BehaviorDelegate extends ViewDragHelper.Callback {
   private boolean isPeeking;
   private float onScreen;
 
-    @State
+  @State
   private int drawerState;
 
   @SuppressWarnings("FieldCanBeLocal")

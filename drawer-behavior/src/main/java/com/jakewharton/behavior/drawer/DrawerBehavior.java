@@ -38,13 +38,13 @@ import android.view.ViewGroup;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static android.support.annotation.RestrictTo.Scope.GROUP_ID;
+import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
 public final class DrawerBehavior extends CoordinatorLayout.Behavior<View> {
 
   /** @hide */
   @SuppressWarnings("WeakerAccess")
-  @RestrictTo(GROUP_ID)
+  @RestrictTo(LIBRARY_GROUP)
   @IntDef({ViewDragHelper.STATE_IDLE, ViewDragHelper.STATE_DRAGGING, ViewDragHelper.STATE_SETTLING})
   @Retention(RetentionPolicy.SOURCE)
   public @interface State {}
