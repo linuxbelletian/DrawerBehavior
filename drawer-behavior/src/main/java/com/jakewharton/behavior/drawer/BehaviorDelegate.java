@@ -36,12 +36,12 @@ import static com.jakewharton.behavior.drawer.DrawerBehavior.State;
 final class BehaviorDelegate extends ViewDragHelper.Callback {
   private static final int PEEK_DELAY = 160; // ms
   private static final int MIN_FLING_VELOCITY = 400; // dips per second
-   static final int FLAG_IS_OPENED = 0x1;
-   @SuppressWarnings("WeakerAccess")
-   static final int FLAG_IS_OPENING = 0x2;
-   @SuppressWarnings("unused")
-   static final int FLAG_IS_CLOSING = 0x4;
-    static final int FLAG_IS_CLOSED = 0x0;
+  static final int FLAG_IS_OPENED = 0x1;
+  @SuppressWarnings("WeakerAccess")
+  static final int FLAG_IS_OPENING = 0x2;
+  @SuppressWarnings("unused")
+  static final int FLAG_IS_CLOSING = 0x4;
+  static final int FLAG_IS_CLOSED = 0x0;
   private static final int DEFAULT_SCRIM_COLOR = 0x99000000;
 
   private final CoordinatorLayout parent;
@@ -50,7 +50,7 @@ final class BehaviorDelegate extends ViewDragHelper.Callback {
   private final ContentScrimDrawer scrimDrawer;
   private final ViewDragHelper dragger;
 
-    private DrawerListener listener;
+  private DrawerListener listener;
 
   private float initialMotionX;
   private float initialMotionY;

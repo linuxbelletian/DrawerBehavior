@@ -199,7 +199,9 @@ public final class DrawerBehavior extends CoordinatorLayout.Behavior<View> {
     );
   }
 
-
+  /**
+   * todo
+   * */
   public static DrawerBehavior from(View view) {
     ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
     if (!(layoutParams instanceof CoordinatorLayout.LayoutParams)) {
