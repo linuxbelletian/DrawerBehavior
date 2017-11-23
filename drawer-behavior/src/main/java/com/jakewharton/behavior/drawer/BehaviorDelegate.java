@@ -18,11 +18,13 @@ package com.jakewharton.behavior.drawer;
 
 import android.os.Build;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,6 +36,7 @@ import static com.jakewharton.behavior.drawer.DrawerBehavior.DrawerListener;
 import static com.jakewharton.behavior.drawer.DrawerBehavior.State;
 
 final class BehaviorDelegate extends ViewDragHelper.Callback {
+  private static final boolean DEBUG = true;
   private static final int PEEK_DELAY = 160; // ms
   private static final int MIN_FLING_VELOCITY = 400; // dips per second
   static final int FLAG_IS_OPENED = 0x1;
@@ -144,22 +147,22 @@ final class BehaviorDelegate extends ViewDragHelper.Callback {
     }
   }
 
-    boolean isDrawerOpen() {
-        return openState == FLAG_IS_OPENED || openState == FLAG_IS_OPENING;
-    }
+  boolean isDrawerOpen() {
+      return openState == FLAG_IS_OPENED || openState == FLAG_IS_OPENING;
+  }
 
-    void setDrawerState(int openState) {
-        this.openState = openState;
-    }
+  void setDrawerState(int openState) {
+      this.openState = openState;
+  }
 
-    void setDrawListener(DrawerListener listener) {
-        this.listener = listener;
-    }
+  void setDrawListener(DrawerListener listener) {
+      this.listener = listener;
+  }
 
   boolean onInterceptTouchEvent(MotionEvent ev) {
     boolean interceptForDrag = dragger.shouldInterceptTouchEvent(ev);
     boolean interceptForTap = false;
-    switch (MotionEventCompat.getActionMasked(ev)) {
+    switch (ev.getActionMasked()) {
       case MotionEvent.ACTION_DOWN: {
         float x = ev.getX();
         float y = ev.getY();
@@ -197,7 +200,7 @@ final class BehaviorDelegate extends ViewDragHelper.Callback {
   boolean onTouchEvent(MotionEvent ev) {
     dragger.processTouchEvent(ev);
 
-    switch (MotionEventCompat.getActionMasked(ev)) {
+    switch (ev.getActionMasked()) {
       case MotionEvent.ACTION_DOWN: {
         initialMotionX = ev.getX();
         initialMotionY = ev.getY();
@@ -240,7 +243,7 @@ final class BehaviorDelegate extends ViewDragHelper.Callback {
       return;
     }
 
-      removeCallbacks();
+    removeCallbacks();
 
     boolean needsSettle;
     if (isLeft) {
@@ -255,11 +258,11 @@ final class BehaviorDelegate extends ViewDragHelper.Callback {
     }
   }
 
-  @Override public void onViewCaptured(View capturedChild, int activePointerId) {
+  @Override public void onViewCaptured(@NonNull View capturedChild, int activePointerId) {
     isPeeking = false;
   }
 
-  @Override public void onViewReleased(View releasedChild, float xvel, float yvel) {
+  @Override public void onViewReleased(@NonNull View releasedChild, float xvel, float yvel) {
     // Offset is how open the drawer is, therefore left/right values
     // are reversed from one another.
     float offset = onScreen;
@@ -281,9 +284,17 @@ final class BehaviorDelegate extends ViewDragHelper.Callback {
     updateDrawerState(state, dragger.getCapturedView());
   }
 
-  private void updateDrawerState(int activeState, View activeDrawer) {
+  private void updateDrawerState(int activeState,@Nullable View activeDrawer) {
       @State final int state = dragger.getViewDragState();
-
+    if (DEBUG) {
+      if (activeDrawer != null)
+        Log.d("updateDrawerState","activeState: "
+                + activeState + "activeDrawer position: "
+                + activeDrawer.getLeft() + ":" + activeDrawer.getRight());
+      else
+        Log.d("updateDrawerState", "activeState: "
+                 + "activeDrawer is null");
+    }
     if (activeDrawer != null && activeState == ViewDragHelper.STATE_IDLE) {
       if (onScreen == 0) {
         dispatchOnDrawerClosed(activeDrawer);
@@ -354,9 +365,9 @@ final class BehaviorDelegate extends ViewDragHelper.Callback {
   }
 
   @Override
-  public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
+  public void onViewPositionChanged(@NonNull View changedView, int left, int top, int dx, int dy) {
     int childWidth = changedView.getWidth();
-
+    Log.d("onViewPositionChanged",left +":" +top+ ":"+dx+":"+dy);
     // This reverses the positioning shown in onLayout.
     float offset;
     if (isLeft) {
@@ -387,7 +398,7 @@ final class BehaviorDelegate extends ViewDragHelper.Callback {
     }
 
     onScreen = slideOffset;
-      if (listener != null)
+    if (listener != null)
       listener.onDrawerSlide(drawerView,slideOffset);
   }
 
@@ -395,7 +406,7 @@ final class BehaviorDelegate extends ViewDragHelper.Callback {
     parent.postDelayed(peekRunnable, PEEK_DELAY);
   }
 
-  @Override public boolean tryCaptureView(View child, int pointerId) {
+  @Override public boolean tryCaptureView(@NonNull View child, int pointerId) {
     return isDrawerView(child);
   }
 
@@ -406,11 +417,11 @@ final class BehaviorDelegate extends ViewDragHelper.Callback {
     }
   }
 
-  @Override public int getViewHorizontalDragRange(View child) {
+  @Override public int getViewHorizontalDragRange(@NonNull View child) {
     return isDrawerView(child) ? child.getWidth() : 0;
   }
 
-  @Override public int clampViewPositionHorizontal(View child, int left, int dx) {
+  @Override public int clampViewPositionHorizontal(@NonNull View child, int left, int dx) {
     if (isLeft) {
       return Math.max(-child.getWidth(), Math.min(left, 0));
     } else {
@@ -419,7 +430,8 @@ final class BehaviorDelegate extends ViewDragHelper.Callback {
     }
   }
 
-  @Override public int clampViewPositionVertical(View child, int top, int dy) {
+  @Override public int clampViewPositionVertical(@NonNull View child, int top, int dy) {
+    Log.d("ViewPositionVertical", "" + child.getTop());
     return child.getTop();
   }
 

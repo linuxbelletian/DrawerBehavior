@@ -23,8 +23,6 @@ import android.support.annotation.IntDef;
 import android.support.annotation.Keep;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.os.ParcelableCompat;
-import android.support.v4.os.ParcelableCompatCreatorCallbacks;
 import android.support.v4.util.SimpleArrayMap;
 import android.support.v4.view.AbsSavedState;
 import android.support.v4.view.GravityCompat;
@@ -42,7 +40,6 @@ import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
 public final class DrawerBehavior extends CoordinatorLayout.Behavior<View> {
 
-  /** @hide */
   @SuppressWarnings("WeakerAccess")
   @RestrictTo(LIBRARY_GROUP)
   @IntDef({ViewDragHelper.STATE_IDLE, ViewDragHelper.STATE_DRAGGING, ViewDragHelper.STATE_SETTLING})
@@ -168,8 +165,7 @@ public final class DrawerBehavior extends CoordinatorLayout.Behavior<View> {
       this.openState = openState;
     }
 
-    @SuppressWarnings("unused")
-    protected SavedState(Parcel source) {
+    private SavedState(Parcel source) {
       this(source,null);
     }
 
@@ -184,19 +180,22 @@ public final class DrawerBehavior extends CoordinatorLayout.Behavior<View> {
       dest.writeInt(openState?1:0);
     }
 
-    public static final Creator<SavedState> CREATOR = ParcelableCompat.newCreator(
-            new ParcelableCompatCreatorCallbacks<SavedState>() {
-              @Override
-              public SavedState createFromParcel(Parcel in, ClassLoader loader) {
-                return new SavedState(in,loader);
-              }
+    public static final Creator<SavedState> CREATOR = new ClassLoaderCreator<SavedState>() {
+      @Override
+      public SavedState createFromParcel(Parcel parcel, ClassLoader classLoader) {
+        return new SavedState(parcel, classLoader);
+      }
 
-              @Override
-              public SavedState[] newArray(int size) {
-                return new SavedState[size];
-              }
-            }
-    );
+      @Override
+      public SavedState createFromParcel(Parcel parcel) {
+        return new SavedState(parcel);
+      }
+
+      @Override
+      public SavedState[] newArray(int i) {
+        return new SavedState[i];
+      }
+    };
   }
 
   /**

@@ -18,7 +18,9 @@ public final class DrawerBehaviorActivity extends AppCompatActivity {
     behavior.setDrawerListener(new DrawerBehavior.DrawerListener() {
       @Override
       public void onDrawerSlide(View drawerView, float slideOffset) {
-
+        Log.d(TAG, "onDrawerSlide: drawerView: "
+                + drawerView.toString()
+                + " slideOffset: " + slideOffset);
       }
 
       @Override

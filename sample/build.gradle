@@ -14,5 +14,7 @@ android {
 }
 
 dependencies {
-  compile project(':drawer-behavior')
+  implementation project(':drawer-behavior')
+  implementation "com.android.support:appcompat-v7:27.0.1"
+  implementation 'com.android.support:design:' + androidSupportLib
 }

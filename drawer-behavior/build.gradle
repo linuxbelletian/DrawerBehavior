@@ -11,5 +11,5 @@ android {
 }
 
 dependencies {
-  compile 'com.android.support:design:' + androidSupportLib
+  implementation 'com.android.support:design:' + androidSupportLib
 }
